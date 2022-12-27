@@ -17,13 +17,19 @@ const SubjectModel_1 = require("./../models/SubjectModel");
 const StudentModel_1 = require("./../models/StudentModel");
 const Connectiondb_1 = require("./../db/Connectiondb");
 const express_1 = __importDefault(require("express"));
-const StudentSubjectModel_1 = require("../models/StudentSubjectModel");
+const RecordModel_1 = require("../models/RecordModel");
+const cors_1 = __importDefault(require("cors"));
+const StudentRoute_1 = require("../routes/StudentRoute");
+const SubjectRoute_1 = require("../routes/SubjectRoute");
+const RecordRoute_1 = require("../routes/RecordRoute");
 class Server {
     constructor() {
         this.app = (0, express_1.default)();
         this.sequelizeInstance = Connectiondb_1.Connectiondb.sequelize();
+        this.middlewares();
         this.authdb();
         this.initializeModels();
+        this.routes();
     }
     authdb() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -41,11 +47,25 @@ class Server {
             try {
                 yield StudentModel_1.StudentModel.sync({ force: true });
                 yield SubjectModel_1.SubjectModel.sync({ force: true });
-                yield StudentSubjectModel_1.StudentSubjectModel.sync({ force: true });
+                yield RecordModel_1.RecordModel.sync({ force: true });
             }
             catch (err) {
                 console.log("Error -> ", err);
             }
+        });
+    }
+    middlewares() {
+        this.app.use((0, cors_1.default)());
+        this.app.use(express_1.default.json());
+    }
+    routes() {
+        this.app.use("/students", StudentRoute_1.studentRouter);
+        this.app.use("/subjects", SubjectRoute_1.subjectRouter);
+        this.app.use("/records", RecordRoute_1.recordRoute);
+    }
+    loadServer() {
+        this.app.listen(process.env.PORT || "8000", () => {
+            console.log("Server running...");
         });
     }
 }

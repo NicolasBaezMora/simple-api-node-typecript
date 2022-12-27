@@ -3,7 +3,7 @@ import { Connectiondb } from '../db/Connectiondb';
 import { Student } from '../structure_models/Student';
 
 
-export const StudentModel = Connectiondb.sequelize().define<Student>("Student", {
+export const StudentModel = Connectiondb.sequelize().define<Student>("student", {
     id: {
         allowNull: false,
         autoIncrement: true,
